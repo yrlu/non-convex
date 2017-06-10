@@ -4,7 +4,8 @@ Self-contained implementation of non-linear optimization algorithms:
 - steepest descent
 - newton's method
 - conjuage gradient
-- quasi-Newton: BFGS
+- BFGS
+- l-BFGS
 
 Following Nocedal & Wright's Numerical Optimization Chapter 3, 5 & 8
 
