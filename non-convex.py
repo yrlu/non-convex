@@ -63,7 +63,7 @@ def interpolation(f, g, f_alpha, g_alpha, alpha, c2, strong_wolfe_alpha, iters=2
   # https://github.com/tamland/non-linear-optimization
   l = 0.0
   h = 1.0
-  for i in xrange(iters):
+  for i in np.arange(iters):
     if strong_wolfe_alpha(f, g, alpha, c2):
       return alpha
 
@@ -83,13 +83,13 @@ def steepest_descent(f, grad, x0, iterations, error):
   x = x0
   x_old = x
   c2 = 0.9
-  for i in xrange(iterations):
+  for i in np.arange(iterations):
     pk = -grad(x)
     alpha = step_length(f, grad, x, 1.0, pk, c2)
     x = x + alpha * pk
     if i % 10 == 0:
       # print "  iter={}, grad={}, alpha={}, x={}, f(x)={}".format(i, pk, alpha, x, f(x))
-      print "  iter={}, x={}, f(x)={}".format(i, x, f(x))
+      print("  iter={}, x={}, f(x)={}".format(i, x, f(x)))
 
     if np.linalg.norm(x - x_old) < error:
       break
@@ -101,13 +101,13 @@ def newton(f, g, H, x0, iterations, error):
   x = x0
   x_old = x
   c2 = 0.9
-  for i in xrange(iterations):
+  for i in np.arange(iterations):
     pk = -np.linalg.solve(H(x), g(x))
     alpha = step_length(f, g, x, 1.0, pk, c2)
     x = x + alpha * pk
     if i % 50 == 0:
       # print "  iter={}, grad={}, alpha={}, x={}, f(x)={}".format(i, pk, alpha, x, f(x))
-      print "  iter={}, x={}, f(x)={}".format(i, x, f(x))
+      print("  iter={}, x={}, f(x)={}".format(i, x, f(x)))
 
     if np.linalg.norm(x - x_old) < error:
       break
@@ -123,7 +123,7 @@ def conjugate_gradient(f, g, x0, iterations, error):
   gk = g(xk)
   pk = -gk
 
-  for i in xrange(iterations):
+  for i in np.arange(iterations):
     alpha = step_length(f, g, xk, 1.0, pk, c2)
     xk1 = xk + alpha * pk
     gk1 = g(xk1)
@@ -132,7 +132,7 @@ def conjugate_gradient(f, g, x0, iterations, error):
 
     if i % 10 == 0:
       # print "  iter={}, grad={}, alpha={}, x={}, f(x)={}".format(i, pk, alpha, xk, f(xk))
-      print "  iter={}, x={}, f(x)={}".format(i, xk, f(xk))
+      print("  iter={}, x={}, f(x)={}".format(i, xk, f(xk)))
 
     if np.linalg.norm(xk1 - xk) < error:
       xk = xk1
@@ -151,7 +151,7 @@ def bfgs(f, g, x0, iterations, error):
   I = np.identity(xk.size)
   Hk = I
 
-  for i in xrange(iterations):
+  for i in np.arange(iterations):
     # compute search direction
     gk = g(xk)
     pk = -Hk.dot(gk)
@@ -175,7 +175,7 @@ def bfgs(f, g, x0, iterations, error):
 
     if i % 10 == 0:
       # print "  iter={}, grad={}, alpha={}, x={}, f(x)={}".format(i, pk, alpha, xk, f(xk))
-      print "  iter={}, x={}, f(x)={}".format(i, xk, f(xk))
+      print("  iter={}, x={}, f(x)={}".format(i, xk, f(xk)))
 
     if np.linalg.norm(xk1 - xk) < error:
       xk = xk1
@@ -201,7 +201,7 @@ def l_bfgs(f, g, x0, iterations, error, m=10):
     q = g(xk)
     a = np.zeros(m_t)
     b = np.zeros(m_t)
-    for i in reversed(xrange(m_t)):
+    for i in reversed(np.arange(m_t)):
       s = sks[i]
       y = yks[i]
       rho_i = float(1.0 / y.T.dot(s))
@@ -210,7 +210,7 @@ def l_bfgs(f, g, x0, iterations, error, m=10):
 
     r = H0.dot(q)
 
-    for i in xrange(m_t):
+    for i in np.arange(m_t):
       s = sks[i]
       y = yks[i]
       rho_i = float(1.0 / y.T.dot(s))
@@ -219,7 +219,7 @@ def l_bfgs(f, g, x0, iterations, error, m=10):
 
     return r
 
-  for i in xrange(iterations):
+  for i in np.arange(iterations):
     # compute search direction
     gk = g(xk)
     pk = -Hp(I, gk)
@@ -245,8 +245,8 @@ def l_bfgs(f, g, x0, iterations, error, m=10):
     rho_k = float(1.0 / yk.dot(sk))
 
     if i % 10 == 0:
-      print "  iter={}, grad={}, alpha={}, x={}, f(x)={}".format(i, pk, \
-        alpha, xk, f(xk))
+      print("  iter={}, grad={}, alpha={}, x={}, f(x)={}".format(i, pk, \
+        alpha, xk, f(xk)))
 
     if np.linalg.norm(xk1 - xk) < error:
       xk = xk1
@@ -262,42 +262,42 @@ if __name__ == '__main__':
   error = 1e-4
   max_iterations = 1000
 
-  print '\n======= Steepest Descent ======\n'
+  print('\n======= Steepest Descent ======\n')
   start = time.time()
   x, n_iter = steepest_descent(rosenbrock, grad_rosen, x0,
                                iterations=max_iterations, error=error)
   end = time.time()
-  print "  Steepest Descent terminated in {} iterations, x = {}, f(x) = {}, time elapsed {}, time per iter {}"\
-    .format(n_iter, x, rosenbrock(x), end - start, (end - start) / n_iter)
+  print("  Steepest Descent terminated in {} iterations, x = {}, f(x) = {}, time elapsed {}, time per iter {}"\
+    .format(n_iter, x, rosenbrock(x), end - start, (end - start) / n_iter))
 
-  print '\n======= Conjugate Gradient Method ======\n'
+  print('\n======= Conjugate Gradient Method ======\n')
   start = time.time()
   x, n_iter = conjugate_gradient(rosenbrock, grad_rosen, x0,
                                  iterations=max_iterations, error=error)
   end = time.time()
-  print "  Conjugate Gradient Method terminated in {} iterations, x = {}, f(x) = {}, time elapsed {}, time per iter {}"\
-    .format(n_iter, x, rosenbrock(x), end - start, (end - start) / n_iter)
+  print("  Conjugate Gradient Method terminated in {} iterations, x = {}, f(x) = {}, time elapsed {}, time per iter {}"\
+    .format(n_iter, x, rosenbrock(x), end - start, (end - start) / n_iter))
 
-  print '\n======= Newton\'s Method ======\n'
+  print('\n======= Newton\'s Method ======\n')
   start = time.time()
   x, n_iter = newton(rosenbrock, grad_rosen, hessian_rosen, x0,
                      iterations=max_iterations, error=error)
   end = time.time()
-  print "  Newton\'s Method terminated in {} iterations, x = {}, f(x) = {}, time elapsed {}, time per iter {}" \
-    .format(n_iter, x, rosenbrock(x), end - start, (end - start) / n_iter)
+  print("  Newton\'s Method terminated in {} iterations, x = {}, f(x) = {}, time elapsed {}, time per iter {}" \
+    .format(n_iter, x, rosenbrock(x), end - start, (end - start) / n_iter))
 
-  print '\n======= Broyden-Fletcher-Goldfarb-Shanno ======\n'
+  print('\n======= Broyden-Fletcher-Goldfarb-Shanno ======\n')
   start = time.time()
   x, n_iter = bfgs(rosenbrock, grad_rosen, x0,
                    iterations=max_iterations, error=error)
   end = time.time()
-  print "  BFGS terminated in {} iterations, x = {}, f(x) = {}, time elapsed {}, time per iter {}"\
-    .format(n_iter, x, rosenbrock(x), end - start, (end - start) / n_iter)
+  print("  BFGS terminated in {} iterations, x = {}, f(x) = {}, time elapsed {}, time per iter {}"\
+    .format(n_iter, x, rosenbrock(x), end - start, (end - start) / n_iter))
 
-  print '\n======= Limited memory Broyden-Fletcher-Goldfarb-Shanno ======\n'
+  print('\n======= Limited memory Broyden-Fletcher-Goldfarb-Shanno ======\n')
   start = time.time()
   x, n_iter = l_bfgs(rosenbrock, grad_rosen, x0,
                      iterations=max_iterations, error=error)
   end = time.time()
-  print "  l-BFGS terminated in {} iterations, x = {}, f(x) = {}, time elapsed {}, time per iter {}"\
-    .format(n_iter, x, rosenbrock(x), end - start, (end - start) / n_iter)
+  print("  l-BFGS terminated in {} iterations, x = {}, f(x) = {}, time elapsed {}, time per iter {}"\
+    .format(n_iter, x, rosenbrock(x), end - start, (end - start) / n_iter))
